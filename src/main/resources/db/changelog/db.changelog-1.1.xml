@@ -1,0 +1,629 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="user (generated)" id="1610419931061-1">
+        <insert tableName="account">
+            <column name="id" valueNumeric="1"/>
+            <column name="balance" valueNumeric="12000.0"/>
+            <column name="create_at" valueDate="2000-01-01"/>
+            <column name="description" value="cuenta empresarial"/>
+            <column name="last_update"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="account_type_id" valueNumeric="1"/>
+            <column name="client_id"/>
+            <column name="currency_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="2"/>
+            <column name="balance" valueNumeric="12000.0"/>
+            <column name="create_at" valueDate="2000-01-01"/>
+            <column name="description" value="cuenta empresarial"/>
+            <column name="last_update"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="account_type_id" valueNumeric="1"/>
+            <column name="client_id"/>
+            <column name="currency_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="3"/>
+            <column name="balance" valueNumeric="15000.0"/>
+            <column name="create_at" valueDate="2000-01-01"/>
+            <column name="description" value="delivery"/>
+            <column name="last_update"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="account_type_id" valueNumeric="1"/>
+            <column name="client_id"/>
+            <column name="currency_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="4"/>
+            <column name="balance" valueNumeric="15000.0"/>
+            <column name="create_at" valueDate="2000-01-01"/>
+            <column name="description" value="delivery"/>
+            <column name="last_update"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="account_type_id" valueNumeric="1"/>
+            <column name="client_id"/>
+            <column name="currency_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="5"/>
+            <column name="balance" valueNumeric="12000.0"/>
+            <column name="create_at" valueDate="2000-01-01"/>
+            <column name="description" value="es un cliente"/>
+            <column name="last_update"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="account_type_id" valueNumeric="2"/>
+            <column name="client_id" valueNumeric="1"/>
+            <column name="currency_id" valueNumeric="1"/>
+            <column name="user_id"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="6"/>
+            <column name="balance" valueNumeric="12000.0"/>
+            <column name="create_at" valueDate="2000-01-01"/>
+            <column name="description" value="es un cliente"/>
+            <column name="last_update"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="account_type_id" valueNumeric="2"/>
+            <column name="client_id" valueNumeric="1"/>
+            <column name="currency_id" valueNumeric="2"/>
+            <column name="user_id"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-2">
+        <insert tableName="account_type">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Caja"/>
+        </insert>
+        <insert tableName="account_type">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Cuenta Corriente"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-3">
+        <insert tableName="address">
+            <column name="id" valueNumeric="1"/>
+            <column name="street" value="callefalsa"/>
+            <column name="alias"/>
+            <column name="apt" value="apt"/>
+            <column name="create_at"/>
+            <column name="floor" value="6C"/>
+            <column name="last_update"/>
+            <column name="latitude"/>
+            <column name="longitude"/>
+            <column name="notes"/>
+            <column name="number" valueNumeric="1597"/>
+            <column name="state"/>
+            <column name="client_id" valueNumeric="1"/>
+            <column name="locality_id" valueNumeric="2007010001"/>
+            <column name="user_id"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-4">
+        <insert tableName="address_status">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Pendiente de verificación"/>
+        </insert>
+        <insert tableName="address_status">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Verificada"/>
+        </insert>
+        <insert tableName="address_status">
+            <column name="id" valueNumeric="3"/>
+            <column name="description" value="Suspendida"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-5">
+        <insert tableName="client">
+            <column name="id" valueNumeric="1"/>
+            <column name="alias" value="juan"/>
+            <column name="first_name" value="juan"/>
+            <column name="last_name" value="perez"/>
+            <column name="notes" value="una nota..."/>
+            <column name="state"/>
+        </insert>
+        <insert tableName="client">
+            <column name="id" valueNumeric="2"/>
+            <column name="alias" value="juan2"/>
+            <column name="first_name" value="juan2"/>
+            <column name="last_name" value="perez2"/>
+            <column name="notes" value="una nota..."/>
+            <column name="state"/>
+        </insert>
+        <insert tableName="client">
+            <column name="id" valueNumeric="3"/>
+            <column name="alias" value="juan3"/>
+            <column name="first_name" value="juan3"/>
+            <column name="last_name" value="perez3"/>
+            <column name="notes" value="una nota..."/>
+            <column name="state"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-6">
+        <insert tableName="commission_type">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Porcentaje"/>
+        </insert>
+        <insert tableName="commission_type">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Importe fijo"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-7">
+        <insert tableName="currency">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Pesos"/>
+            <column name="symbol" value="$"/>
+        </insert>
+        <insert tableName="currency">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Dolares"/>
+            <column name="symbol" value="U$S"/>
+        </insert>
+        <insert tableName="currency">
+            <column name="id" valueNumeric="3"/>
+            <column name="description" value="Euros"/>
+            <column name="symbol" value="€"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-8">
+        <insert tableName="device">
+            <column name="id" valueNumeric="1"/>
+            <column name="fcm" value="a"/>
+            <column name="internal_version" value="a"/>
+            <column name="name" value="a"/>
+            <column name="os"/>
+            <column name="version"/>
+            <column name="user_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-9">
+        <insert tableName="locality">
+            <column name="id" valueNumeric="2007010001"/>
+            <column name="description" value="constitucion"/>
+            <column name="latitude" value="-34.62504786"/>
+            <column name="longitude" value="-58.38438723"/>
+            <column name="state_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="locality">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="prueba"/>
+            <column name="latitude" value="-34.62504786"/>
+            <column name="longitude" value="-58.38438723"/>
+            <column name="state_id" valueNumeric="18"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-10">
+        <insert tableName="operation">
+            <column name="id" valueNumeric="1"/>
+            <column name="convertion_rate"/>
+            <column name="create_at" valueDate="1999-12-31T21:00:00"/>
+            <column name="description" value="desc"/>
+            <column name="destination_amount" valueNumeric="500.0"/>
+            <column name="last_update"/>
+            <column name="notes" value="notes"/>
+            <column name="origin_amount" valueNumeric="20000.0"/>
+            <column name="priority"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="time_range"/>
+            <column name="time_since"/>
+            <column name="time_until"/>
+            <column name="address_id" valueNumeric="1"/>
+            <column name="broker_id"/>
+            <column name="destination_currency" valueNumeric="2"/>
+            <column name="enterprise_id"/>
+            <column name="operation_status_id" valueNumeric="1"/>
+            <column name="operation_type_id" valueNumeric="1"/>
+            <column name="origin_currency" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-11">
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Ingresada"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Aprobada"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="3"/>
+            <column name="description" value="Asignada"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="4"/>
+            <column name="description" value="Aceptada"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="5"/>
+            <column name="description" value="Arribada"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="6"/>
+            <column name="description" value="Finalizada"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="7"/>
+            <column name="description" value="Suspendida"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="8"/>
+            <column name="description" value="Cancelada"/>
+        </insert>
+        <insert tableName="operation_status">
+            <column name="id" valueNumeric="9"/>
+            <column name="description" value="Rechazada"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-12">
+        <insert tableName="operation_type">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Inicio de jornada"/>
+        </insert>
+        <insert tableName="operation_type">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Cierre de jornada"/>
+        </insert>
+        <insert tableName="operation_type">
+            <column name="id" valueNumeric="3"/>
+            <column name="description" value="Compra moneda extranjera"/>
+        </insert>
+        <insert tableName="operation_type">
+            <column name="id" valueNumeric="4"/>
+            <column name="description" value="Venta moneda extranjera"/>
+        </insert>
+        <insert tableName="operation_type">
+            <column name="id" valueNumeric="5"/>
+            <column name="description" value="Transferencia"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-13">
+        <insert tableName="pair_quote">
+            <column name="id" valueNumeric="1"/>
+            <column name="ask" valueNumeric="180.92"/>
+            <column name="bid" valueNumeric="0.013"/>
+            <column name="destination_currency_id" valueNumeric="2"/>
+            <column name="origin_currency_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="pair_quote">
+            <column name="id" valueNumeric="2"/>
+            <column name="ask" valueNumeric="0.013"/>
+            <column name="bid" valueNumeric="180.92"/>
+            <column name="destination_currency_id" valueNumeric="1"/>
+            <column name="origin_currency_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-14">
+        <insert tableName="phone">
+            <column name="id" valueNumeric="2"/>
+            <column name="alias" value="juan"/>
+            <column name="create_at"/>
+            <column name="last_update"/>
+            <column name="notes"/>
+            <column name="number" value="1234-4532"/>
+            <column name="state"/>
+            <column name="client_id" valueNumeric="1"/>
+            <column name="phone_type" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-15">
+        <insert tableName="phone_status">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Pendiente de verificación"/>
+        </insert>
+        <insert tableName="phone_status">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Verificado"/>
+        </insert>
+        <insert tableName="phone_status">
+            <column name="id" valueNumeric="3"/>
+            <column name="description" value="Suspendido"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-16">
+        <insert tableName="phone_type">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Movil"/>
+        </insert>
+        <insert tableName="phone_type">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Trabajo"/>
+        </insert>
+        <insert tableName="phone_type">
+            <column name="id" valueNumeric="3"/>
+            <column name="description" value="Casa"/>
+        </insert>
+        <insert tableName="phone_type">
+            <column name="id" valueNumeric="4"/>
+            <column name="description" value="Principal"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-17">
+        <insert tableName="role">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="ROLE_ADMINISTRADOR"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="ROLE_TESORERO"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="ROLE_SUPERVISOR_GENERAL"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="ROLE_COMERCIAL"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="ROLE_DELIVERY"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" valueNumeric="6"/>
+            <column name="name" value="ROLE_COMISIONISTA"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-18">
+        <insert tableName="state">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Ciudad Autónoma de Buenos Aires"/>
+            <column name="latitude" value="-34.61449341"/>
+            <column name="longitude" value="-58.44585635"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="6"/>
+            <column name="description" value="Buenos Aires"/>
+            <column name="latitude" value="-36.67694152"/>
+            <column name="longitude" value="-60.55883198"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="10"/>
+            <column name="description" value="Catamarca"/>
+            <column name="latitude" value="-27.33583328"/>
+            <column name="longitude" value="-66.94768243"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="14"/>
+            <column name="description" value="Córdoba"/>
+            <column name="latitude" value="-32.14293266"/>
+            <column name="longitude" value="-63.80175327"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="18"/>
+            <column name="description" value="Corrientes"/>
+            <column name="latitude" value="-28.77430470"/>
+            <column name="longitude" value="-57.80121920"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="22"/>
+            <column name="description" value="Chaco"/>
+            <column name="latitude" value="-26.38643091"/>
+            <column name="longitude" value="-60.76583074"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="26"/>
+            <column name="description" value="Chubut"/>
+            <column name="latitude" value="-43.78862335"/>
+            <column name="longitude" value="-68.52675939"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="30"/>
+            <column name="description" value="Entre Ríos"/>
+            <column name="latitude" value="-32.05887354"/>
+            <column name="longitude" value="-59.20144755"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="34"/>
+            <column name="description" value="Formosa"/>
+            <column name="latitude" value="-24.89497259"/>
+            <column name="longitude" value="-59.93244058"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="38"/>
+            <column name="description" value="Jujuy"/>
+            <column name="latitude" value="-23.32007842"/>
+            <column name="longitude" value="-65.76425222"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="42"/>
+            <column name="description" value="La Pampa"/>
+            <column name="latitude" value="-37.13155377"/>
+            <column name="longitude" value="-65.44665466"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="46"/>
+            <column name="description" value="La Rioja"/>
+            <column name="latitude" value="-29.68577630"/>
+            <column name="longitude" value="-67.18173597"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="50"/>
+            <column name="description" value="Mendoza"/>
+            <column name="latitude" value="-34.62988731"/>
+            <column name="longitude" value="-68.58312282"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="54"/>
+            <column name="description" value="Misiones"/>
+            <column name="latitude" value="-26.87539651"/>
+            <column name="longitude" value="-54.65169662"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="58"/>
+            <column name="description" value="Neuquén"/>
+            <column name="latitude" value="-38.64175758"/>
+            <column name="longitude" value="-70.11857052"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="62"/>
+            <column name="description" value="Río Negro"/>
+            <column name="latitude" value="-40.40579572"/>
+            <column name="longitude" value="-67.22932989"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="66"/>
+            <column name="description" value="Salta"/>
+            <column name="latitude" value="-24.29913445"/>
+            <column name="longitude" value="-64.81446296"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="70"/>
+            <column name="description" value="San Juan"/>
+            <column name="latitude" value="-30.86536800"/>
+            <column name="longitude" value="-68.88949085"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="74"/>
+            <column name="description" value="San Luis"/>
+            <column name="latitude" value="-33.75772574"/>
+            <column name="longitude" value="-66.02812982"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="78"/>
+            <column name="description" value="Santa Cruz"/>
+            <column name="latitude" value="-48.81548518"/>
+            <column name="longitude" value="-69.95576217"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="82"/>
+            <column name="description" value="Santa Fe"/>
+            <column name="latitude" value="-30.70692716"/>
+            <column name="longitude" value="-60.94983694"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="86"/>
+            <column name="description" value="Santiago del Estero"/>
+            <column name="latitude" value="-27.78241166"/>
+            <column name="longitude" value="-63.25238666"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="90"/>
+            <column name="description" value="Tucumán"/>
+            <column name="latitude" value="-26.94780018"/>
+            <column name="longitude" value="-65.36475794"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="94"/>
+            <column name="description" value="Tierra del Fuego, Antártida e Islas del Atlántico Sur"/>
+            <column name="latitude" value="-82.52151781"/>
+            <column name="longitude" value="-50.74274860"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-19">
+        <insert tableName="transaction">
+            <column name="id" valueNumeric="1"/>
+            <column name="amount" valueNumeric="4500.0"/>
+            <column name="commision"/>
+            <column name="create_at"/>
+            <column name="last_update"/>
+            <column name="notes"/>
+            <column name="other"/>
+            <column name="state"/>
+            <column name="time_range" valueDate="1999-12-31T21:00:00"/>
+            <column name="account_id" valueNumeric="1"/>
+            <column name="commission_id"/>
+            <column name="commission_type_id"/>
+            <column name="operation_id"/>
+            <column name="transaction_status_id"/>
+            <column name="transaction_type_id"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-20">
+        <insert tableName="transaction_status">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Pendiente acreditación"/>
+        </insert>
+        <insert tableName="transaction_status">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Acreditada"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-21">
+        <insert tableName="transaction_type">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Ingreso"/>
+        </insert>
+        <insert tableName="transaction_type">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Egreso"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-22">
+        <insert tableName="user">
+            <column name="id" valueNumeric="1"/>
+            <column name="create_at" valueDate="2020-10-15"/>
+            <column name="dni" value="38.458.365"/>
+            <column name="email" value="juan@juan.com"/>
+            <column name="last_update"/>
+            <column name="name" value="juan"/>
+            <column name="notes" value="una nota"/>
+            <column name="password" value="$2a$10$486eQMHqIgEIqaSjgGWS2.zZHHNyj2cQpy2J1fztnGxFLRCHeNr/u"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="surname" value="Perez"/>
+            <column name="username" value="juan"/>
+        </insert>
+        <insert tableName="user">
+            <column name="id" valueNumeric="2"/>
+            <column name="create_at" valueDate="2020-10-15"/>
+            <column name="dni" value="38.458.365"/>
+            <column name="email" value="juan@juan.com"/>
+            <column name="last_update"/>
+            <column name="name" value="luciana"/>
+            <column name="notes" value="una nota"/>
+            <column name="password" value="$2a$10$c/9vScJhZ0tVbYtYaXe3WODGmYnRtJU5ZnExt9iyPnwqt1MrKFvmi"/>
+            <column name="state" valueNumeric="1"/>
+            <column name="surname" value="ape"/>
+            <column name="username" value="lola"/>
+        </insert>
+        <insert tableName="user">
+            <column name="id" valueNumeric="3"/>
+            <column name="create_at" valueDate="2020-10-15"/>
+            <column name="dni" value="38.458.365"/>
+            <column name="email" value="juan@juan.com"/>
+            <column name="last_update"/>
+            <column name="name" value="roberto"/>
+            <column name="notes" value="una nota"/>
+            <column name="password" value="$2a$10$amNYoyhbLu4KEzaMG0awPufZ5oKRust4/OQUmJL7wT8t.El/opiny"/>
+            <column name="state" valueNumeric="0"/>
+            <column name="surname" value="lopez"/>
+            <column name="username" value="roberto"/>
+        </insert>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419931061-23">
+        <insert tableName="user_roles">
+            <column name="id" valueNumeric="1"/>
+            <column name="description"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="roles_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="id" valueNumeric="2"/>
+            <column name="description"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="roles_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="id" valueNumeric="3"/>
+            <column name="description"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="roles_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="id" valueNumeric="4"/>
+            <column name="description"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="roles_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="id" valueNumeric="5"/>
+            <column name="description"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="roles_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,484 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="user (generated)" id="1610419913747-1">
+        <createTable tableName="account">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="balance" type="FLOAT(12)"/>
+            <column name="create_at" type="date"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="last_update" type="date"/>
+            <column name="state" type="INT"/>
+            <column name="account_type_id" type="BIGINT"/>
+            <column name="client_id" type="BIGINT"/>
+            <column name="currency_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-2">
+        <createTable tableName="account_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-3">
+        <createTable tableName="address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="apt" type="VARCHAR(255)"/>
+            <column name="create_at" type="date"/>
+            <column name="floor" type="VARCHAR(255)"/>
+            <column name="last_update" type="date"/>
+            <column name="latitude" type="VARCHAR(255)"/>
+            <column name="longitude" type="VARCHAR(255)"/>
+            <column name="notes" type="VARCHAR(255)"/>
+            <column name="number" type="INT"/>
+            <column name="state" type="INT"/>
+            <column name="client_id" type="BIGINT"/>
+            <column name="locality_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-4">
+        <createTable tableName="address_status">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-5">
+        <createTable tableName="client">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="notes" type="VARCHAR(255)"/>
+            <column name="state" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-6">
+        <createTable tableName="commission">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="create_at" type="date"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="last_update" type="date"/>
+            <column name="state" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-7">
+        <createTable tableName="commission_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-8">
+        <createTable tableName="currency">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="symbol" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-9">
+        <createTable tableName="device">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="fcm" type="VARCHAR(255)"/>
+            <column name="internal_version" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="os" type="VARCHAR(255)"/>
+            <column name="version" type="VARCHAR(255)"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-10">
+        <createTable tableName="locality">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="latitude" type="VARCHAR(255)"/>
+            <column name="longitude" type="VARCHAR(255)"/>
+            <column name="state_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-11">
+        <createTable tableName="operation">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="convertion_rate" type="FLOAT(12)"/>
+            <column name="create_at" type="datetime"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="destination_amount" type="FLOAT(12)"/>
+            <column name="last_update" type="date"/>
+            <column name="notes" type="VARCHAR(255)"/>
+            <column name="origin_amount" type="FLOAT(12)"/>
+            <column name="priority" type="INT"/>
+            <column name="state" type="INT"/>
+            <column name="time_range" type="date"/>
+            <column name="time_since" type="date"/>
+            <column name="time_until" type="date"/>
+            <column name="address_id" type="BIGINT"/>
+            <column name="broker_id" type="BIGINT"/>
+            <column name="destination_currency" type="BIGINT"/>
+            <column name="enterprise_id" type="BIGINT"/>
+            <column name="operation_status_id" type="BIGINT"/>
+            <column name="operation_type_id" type="BIGINT"/>
+            <column name="origin_currency" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-12">
+        <createTable tableName="operation_status">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-13">
+        <createTable tableName="operation_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-14">
+        <createTable tableName="pair_quote">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ask" type="FLOAT(12)"/>
+            <column name="bid" type="FLOAT(12)"/>
+            <column name="destination_currency_id" type="BIGINT"/>
+            <column name="origin_currency_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-15">
+        <createTable tableName="phone">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="create_at" type="date"/>
+            <column name="last_update" type="date"/>
+            <column name="notes" type="VARCHAR(255)"/>
+            <column name="number" type="VARCHAR(255)"/>
+            <column name="state" type="INT"/>
+            <column name="client_id" type="BIGINT"/>
+            <column name="phone_type" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-16">
+        <createTable tableName="phone_status">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-17">
+        <createTable tableName="phone_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-18">
+        <createTable tableName="push_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="delivery_status" type="VARCHAR(255)"/>
+            <column name="payload" type="VARCHAR(255)"/>
+            <column name="response" type="VARCHAR(255)"/>
+            <column name="retries" type="VARCHAR(255)"/>
+            <column name="device_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-19">
+        <createTable tableName="role">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(30)">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-20">
+        <createTable tableName="role_routes">
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="routes_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-21">
+        <createTable tableName="route">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="component" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="navbar" type="VARCHAR(255)"/>
+            <column name="path" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-22">
+        <createTable tableName="state">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="latitude" type="VARCHAR(255)"/>
+            <column name="longitude" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-23">
+        <createTable tableName="transaction">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="amount" type="FLOAT(12)"/>
+            <column name="commision" type="VARCHAR(255)"/>
+            <column name="create_at" type="date"/>
+            <column name="last_update" type="date"/>
+            <column name="notes" type="VARCHAR(255)"/>
+            <column name="other" type="VARCHAR(255)"/>
+            <column name="state" type="INT"/>
+            <column name="time_range" type="datetime"/>
+            <column name="account_id" type="BIGINT"/>
+            <column name="commission_id" type="BIGINT"/>
+            <column name="commission_type_id" type="BIGINT"/>
+            <column name="operation_id" type="BIGINT"/>
+            <column name="transaction_status_id" type="BIGINT"/>
+            <column name="transaction_type_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-24">
+        <createTable tableName="transaction_status">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-25">
+        <createTable tableName="transaction_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-26">
+        <createTable tableName="user">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="create_at" type="date"/>
+            <column name="dni" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="last_update" type="date"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="notes" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(60)"/>
+            <column name="state" type="INT"/>
+            <column name="surname" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(20)">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-27">
+        <createTable tableName="user_roles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roles_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-28">
+        <createIndex indexName="FK316pn109iutn6yqoxrqp09cpc" tableName="account">
+            <column name="currency_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-29">
+        <createIndex indexName="FK33pcopd4dsd82cbkfh0n20kw0" tableName="operation">
+            <column name="enterprise_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-30">
+        <createIndex indexName="FK3l128n3e002mt3ia6vuclbpe7" tableName="pair_quote">
+            <column name="origin_currency_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-31">
+        <createIndex indexName="FK3o48ec26lujl3kf01hwqplhn2" tableName="phone">
+            <column name="client_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-32">
+        <createIndex indexName="FK4vhtihydrbh3ex4x1xp8mfl1k" tableName="transaction">
+            <column name="operation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-33">
+        <createIndex indexName="FK55itppkw3i07do3h7qoclqd4k" tableName="user_roles">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-34">
+        <createIndex indexName="FK65jxo7msx6vs49hb4fy757kbg" tableName="pair_quote">
+            <column name="destination_currency_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-35">
+        <createIndex indexName="FK6g20fcr3bhr6bihgy24rq1r1b" tableName="transaction">
+            <column name="account_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-36">
+        <createIndex indexName="FK7156ty2o5atyuy9f6kuup9dna" tableName="address">
+            <column name="client_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-37">
+        <createIndex indexName="FK7m8ru44m93ukyb61dfxw0apf6" tableName="account">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-38">
+        <createIndex indexName="FK9ll1rrqnycpe3nao6ri0ice08" tableName="role_routes">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-39">
+        <createIndex indexName="FKb2bntn7gojou7hts167unewur" tableName="locality">
+            <column name="state_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-40">
+        <createIndex indexName="FKbyh0oxs3gvdcgv55kqh0u9iw" tableName="operation">
+            <column name="operation_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-41">
+        <createIndex indexName="FKc9v4wt8mroxfj8c398blw1ovo" tableName="role_routes">
+            <column name="routes_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-42">
+        <createIndex indexName="FKda8tuywtf0gb6sedwk7la1pgi" tableName="address">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-43">
+        <createIndex indexName="FKdb3nt6iipyx0tqg3synr73fpu" tableName="transaction">
+            <column name="transaction_status_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-44">
+        <createIndex indexName="FKdcxkburi0uai3wvw27xp1i0ho" tableName="phone">
+            <column name="phone_type"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-45">
+        <createIndex indexName="FKdovbfb3k9wp1h4mk78lkabk5l" tableName="transaction">
+            <column name="commission_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-46">
+        <createIndex indexName="FKegmve0bcrsj9mkajr4tu8j36f" tableName="address">
+            <column name="locality_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-47">
+        <createIndex indexName="FKf74enmguji5a3lb6r3j2wvlom" tableName="push_notification">
+            <column name="device_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-48">
+        <createIndex indexName="FKgw84mgpacw9htdxcs2j1p7u6j" tableName="account">
+            <column name="account_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-49">
+        <createIndex indexName="FKh9swdxrcc4xohsvy19q1k37c6" tableName="operation">
+            <column name="operation_status_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-50">
+        <createIndex indexName="FKj9553ass9uctjrmh0gkqsmv0d" tableName="user_roles">
+            <column name="roles_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-51">
+        <createIndex indexName="FKjqhfm8nbj68wed70j8cow801f" tableName="operation">
+            <column name="destination_currency"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-52">
+        <createIndex indexName="FKk92m2qj36vn62ctp5pgbt4982" tableName="device">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-53">
+        <createIndex indexName="FKkm8yb63h4ownvnlrbwnadntyn" tableName="account">
+            <column name="client_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-54">
+        <createIndex indexName="FKn6fadn5rjwt0jmu5tlp7o99rs" tableName="operation">
+            <column name="broker_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-55">
+        <createIndex indexName="FKnl0vpl01y6vu03hkpi4xupugo" tableName="transaction">
+            <column name="transaction_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-56">
+        <createIndex indexName="FKpuyetmdvqenod78ywsbvj3ijv" tableName="transaction">
+            <column name="commission_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-57">
+        <createIndex indexName="FKq29p6mlje362fw01q2w6xf7q4" tableName="operation">
+            <column name="origin_currency"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user (generated)" id="1610419913747-58">
+        <createIndex indexName="FKr5tiv2qb548ogysn1xn0xanhp" tableName="operation">
+            <column name="address_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
