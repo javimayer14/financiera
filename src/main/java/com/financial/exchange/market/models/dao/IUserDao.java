@@ -25,11 +25,20 @@ public interface IUserDao extends JpaRepository<User, Long> {
 	@Query("SELECT u " + "FROM User u " + "WHERE u.state = 0")
 	List<User> findAllInactives();
 
-	@Query("SELECT u " + "FROM User u " + "JOIN u.roles r " + "WHERE (r IN (?1)) "
-			+ "AND ((?2 IS NULL) OR (u.username LIKE %?2%)) " + "AND ((?3 IS NULL) OR (u.name LIKE %?3%)) "
-			+ "AND ((?4 IS NULL) OR (u.surname LIKE %?4%)) " + "GROUP BY u")
-	List<User> findUsersbyMultipleVar(@Param("idRole") List<Role> roles, @Param("userName") String userName,
-			@Param("name") String name, @Param("surname") String surname);
+	@Query("SELECT u "
+			+ "FROM User u "
+			+ "JOIN u.roles r " 
+			+ "WHERE (r IN (?1)) "
+			+ "AND ((?2 IS NULL) OR (u.username LIKE %?2%)) "
+			+ "AND ((?3 IS NULL) OR (u.name LIKE %?3%)) "
+			+ "AND ((?4 IS NULL) OR (u.surname LIKE %?4%)) "
+			+ "AND ((?5 IS NULL) OR (u.state = ?5)) "
+			+ "GROUP BY u")
+	List<User> findUsersbyMultipleVar(	@Param("idRole") List<Role> roles, 
+										@Param("userName") String userName,
+										@Param("name") String name, 
+										@Param("surname") String surname,
+										@Param("state") Integer state);
 
 	@Query("SELECT c " + "FROM User c " + "WHERE ((?1 IS NULL) " + "		OR (c.name LIKE %?1%)"
 			+ "		OR (c.surname LIKE %?1%)" + "		OR (c.username LIKE %?1%)) ")

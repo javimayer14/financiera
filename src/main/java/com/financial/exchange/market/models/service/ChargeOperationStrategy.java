@@ -21,7 +21,7 @@ public class ChargeOperationStrategy extends AbstractTradingOperation implements
 				closeOperation(opearionId);
 				break;
 			case ASSIGNED:
-				assignedOperation(operation, EAccountType.CURRENT_ACCOUNT.getState());
+				assignedOperation(operation, EAccountType.CASH.getState());
 				break;
 			default:
 				changeStatus(operation);

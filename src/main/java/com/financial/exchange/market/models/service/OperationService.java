@@ -148,7 +148,7 @@ public class OperationService implements IOperationService {
 			Long brokerId, Date desde, Date hasta, Float minOriginAmount, Float maxOriginAmount, Integer alert,
 			List<GrantedAuthority> authorities, Boolean onlyDelivery, Long idOperation, Pageable pageable) {
 		Boolean onlyPresencial = null;
-		
+
 		if (onlyDelivery != null && onlyDelivery == true)
 			onlyDelivery = true;
 		else
@@ -160,7 +160,7 @@ public class OperationService implements IOperationService {
 		if (types == null || types.isEmpty())
 			types = allTypes();
 
-		if (isOnlyTeso(authorities) )
+		if (isOnlyTeso(authorities))
 			onlyPresencial = true;
 
 		Date fechaHasta = null;
@@ -168,7 +168,7 @@ public class OperationService implements IOperationService {
 			fechaHasta = DateUtils.addDays(hasta, 1);
 		}
 		Page<Operation> operations = operationDao.findOperationsByVar(states, types, state, brokerId, desde, fechaHasta,
-				minOriginAmount, maxOriginAmount, alert,onlyPresencial, onlyDelivery, idOperation, pageable);
+				minOriginAmount, maxOriginAmount, alert, onlyPresencial, onlyDelivery, idOperation, pageable);
 		Page<OperationDetailDTO> operationsDTO = operations.map(this::operationToDetailDto);
 
 		return operationsDTO;
@@ -194,7 +194,9 @@ public class OperationService implements IOperationService {
 			Account newAccount = accountService.findAccountUserById(userId, currentCurrency.getId(), accountType);
 			accountService.checkAccountUser(newAccount, userId, currentCurrency.getId(), accountType);
 			User currentUser = currentAcount.getUser();
-			if (currentUser != null) {
+			
+			//Cambiamos en las transacciones de usuarios no comisionistas (descartamos clientes)
+			if (currentUser != null && t.getCommissionType() == null) {
 				t.setAccount(newAccount);
 
 			}
@@ -260,6 +262,7 @@ public class OperationService implements IOperationService {
 		estados.add(new OperationStatus(EOperationStatus.FINISHED.getStatus()));
 		estados.add(new OperationStatus(EOperationStatus.REJECTED.getStatus()));
 		estados.add(new OperationStatus(EOperationStatus.SUSPENDED.getStatus()));
+		estados.add(new OperationStatus(EOperationStatus.ARCHIVED.getStatus()));
 		return estados;
 	}
 
@@ -267,7 +270,7 @@ public class OperationService implements IOperationService {
 	public Page<OperationDetailDTO> findOperationsByAccount(Long id, List<OperationStatus> states,
 			List<OperationType> types, Integer state, Long brokerId, Date desde, Date hasta, Float minOriginAmount,
 			Float maxOriginAmount, Integer alert, Long idOperation, Pageable pageable) {
-		
+
 		if (states == null || states.isEmpty()) {
 			states = allStates();
 		}
@@ -279,7 +282,7 @@ public class OperationService implements IOperationService {
 			fechaHasta = DateUtils.addDays(hasta, 1);
 		}
 		Page<Operation> operations = operationDao.findOperationsByAccount(id, states, types, state, brokerId, desde,
-				fechaHasta, minOriginAmount, maxOriginAmount, alert,idOperation, pageable);
+				fechaHasta, minOriginAmount, maxOriginAmount, alert, idOperation, pageable);
 		Page<OperationDetailDTO> operationsDTO = operations.map(this::operationToDetailDto);
 
 		return operationsDTO;
@@ -475,18 +478,21 @@ public class OperationService implements IOperationService {
 		Account clientAccountDestinationChecked = accountService.checkAccountClient(clientAccountDestination, clientId,
 				destinationCurrencyId, accountType);
 
-		transactions.add(transactionService.createTransaction(operation.getOriginAmount(),
-				ETransactionType.ENTRY.getValue(), clientAccountOriginChecked, newOperation));
-		transactions.add(transactionService.createTransaction(desAmount, ETransactionType.DISCHARGE.getValue(),
-				clientAccountDestinationChecked, newOperation));
-		transactions.add(transactionService.createTransaction(desAmount, ETransactionType.ENTRY.getValue(),
-				accountService.checkAccountUser(userAccountDestination, userBrokerId, destinationCurrencyId,
-						accountType),
-				newOperation));
+		Long type1 = ETransactionType.ENTRY.getValue();
+		Long type2 = ETransactionType.DISCHARGE.getValue();
+		if (operationType == EOperationType.BUY_CURRENCY.getState()) {
+			type1 = ETransactionType.DISCHARGE.getValue();
+			type2 = ETransactionType.ENTRY.getValue();
+		}
+		transactions.add(transactionService.createTransaction(operation.getOriginAmount(), type1,
+				clientAccountOriginChecked, newOperation));
 		transactions.add(
-				transactionService.createTransaction(operation.getOriginAmount(), ETransactionType.DISCHARGE.getValue(),
-						accountService.checkAccountUser(userAccountOrigin, userBrokerId, originCurrencyId, accountType),
-						newOperation));
+				transactionService.createTransaction(desAmount, type2, clientAccountDestinationChecked, newOperation));
+		transactions.add(transactionService.createTransaction(desAmount, type1, accountService.checkAccountUser(
+				userAccountDestination, userBrokerId, destinationCurrencyId, accountType), newOperation));
+		transactions.add(transactionService.createTransaction(operation.getOriginAmount(), type2,
+				accountService.checkAccountUser(userAccountOrigin, userBrokerId, originCurrencyId, accountType),
+				newOperation));
 
 		CommissionPersonDTO ageCommissionDTO = operation.getOriginCommissionAgent();
 		if (ageCommissionDTO != null && ageCommissionDTO.getCommissionAmount() != null) {
@@ -502,11 +508,11 @@ public class OperationService implements IOperationService {
 				Long userAgent = person.getId();
 
 				Account userAgentDestination = accountService.findAccountUserById(userAgent, destinationCurrencyId,
-						accountType);
+						EAccountType.CURRENT_ACCOUNT.getState());
 
 				Transaction comOut = transactionService.createTransaction(comAmount, ETransactionType.ENTRY.getValue(),
 						accountService.checkAccountUser(userAgentDestination, userAgent, destinationCurrencyId,
-								accountType),
+								EAccountType.CURRENT_ACCOUNT.getState()),
 						newOperation);
 
 				comOut.setCommissionType(comType);
@@ -514,12 +520,6 @@ public class OperationService implements IOperationService {
 				transactions.add(comOut);
 			}
 
-			Transaction comIn = transactionService.createTransaction(comAmount, ETransactionType.DISCHARGE.getValue(),
-					clientAccountDestinationChecked, newOperation);
-
-			comIn.setCommissionType(comType);
-			comIn.setCommision(comOriginalAmount.toString());
-			transactions.add(comIn);
 		}
 		createTradingOperation(newOperation, operation, operationType, transactions);
 
@@ -555,7 +555,8 @@ public class OperationService implements IOperationService {
 		CommissionPersonDTO commissionAgentOne = operation.getOriginCommissionAgent();
 		CommissionPersonDTO commissionAgentTwo = operation.getDestinationCommissionAgent();
 		Long originCurrencyId = operation.getOriginCurrencyId();
-		Long enterpriseId = operation.getEnterpriseId();
+		Long transactionTypeComissionOrigen = commissionClientOrigin.getTransactionType();
+		Long transactionTypeComissionDestination = commissionClientDestination.getTransactionType();
 
 		Float commissionOneAmount = transactionService.checkCommissionAmmount(commissionClientOrigin,
 				operation.getOriginAmount());
@@ -566,10 +567,6 @@ public class OperationService implements IOperationService {
 		Float comClientDestinAmount = commissionClientDestination.getCommissionAmount();
 		CommissionType comClientOriginType = commissionClientOrigin.getCommissionType();
 		CommissionType comClientDestinType = commissionClientDestination.getCommissionType();
-
-		Account enterpriseIdAccount = accountService.findAccountUserById(enterpriseId, originCurrencyId, accountType);
-		Account enterpriseAccountChecked = accountService.checkAccountUser(enterpriseIdAccount, enterpriseId,
-				originCurrencyId, accountType);
 
 		Account clientAccountOrigin = accountService.findAccountClientById(clientOneId, originCurrencyId, accountType);
 		Account clientAccountOriginChecked = accountService.checkAccountClient(clientAccountOrigin, clientOneId,
@@ -582,34 +579,24 @@ public class OperationService implements IOperationService {
 
 		// Transacciones del monto de la operacion
 		transactions.add(transactionService.createTransaction(operation.getOriginAmount(),
-				ETransactionType.DISCHARGE.getValue(), clientAccountOriginChecked, newOperation));
+				ETransactionType.ENTRY.getValue(), clientAccountOriginChecked, newOperation));
 		transactions.add(transactionService.createTransaction(operation.getOriginAmount(),
-				ETransactionType.ENTRY.getValue(), clientAccountDestinationChecked, newOperation));
+				ETransactionType.DISCHARGE.getValue(), clientAccountDestinationChecked, newOperation));
 
 		// Transacciones por las comisiones fijas
 		Transaction clientOriginTOut = transactionService.createTransaction(commissionOneAmount,
-				ETransactionType.DISCHARGE.getValue(), clientAccountOriginChecked, newOperation);
+				transactionTypeComissionOrigen, clientAccountOriginChecked, newOperation);
 		Transaction clientDestinationTOut = transactionService.createTransaction(commissionTwoAmount,
-				ETransactionType.DISCHARGE.getValue(), clientAccountDestinationChecked, newOperation);
-		Transaction clientOriginTIn = transactionService.createTransaction(commissionOneAmount,
-				ETransactionType.ENTRY.getValue(), enterpriseAccountChecked, newOperation);
-		Transaction clientDestinationTIn = transactionService.createTransaction(commissionTwoAmount,
-				ETransactionType.ENTRY.getValue(), enterpriseAccountChecked, newOperation);
+				transactionTypeComissionDestination, clientAccountDestinationChecked, newOperation);
 
 		clientOriginTOut.setCommissionType(comClientOriginType);
 		clientOriginTOut.setCommision(comClientOriginAmount.toString());
-		clientOriginTIn.setCommissionType(comClientOriginType);
-		clientOriginTIn.setCommision(comClientOriginAmount.toString());
 
 		clientDestinationTOut.setCommissionType(comClientDestinType);
 		clientDestinationTOut.setCommision(comClientDestinAmount.toString());
-		clientDestinationTIn.setCommissionType(comClientDestinType);
-		clientDestinationTIn.setCommision(comClientDestinAmount.toString());
 
 		transactions.add(clientOriginTOut);
 		transactions.add(clientDestinationTOut);
-		transactions.add(clientOriginTIn);
-		transactions.add(clientDestinationTIn);
 
 		// Transacciones por las comisiones de los comisionistas
 		if (commissionAgentOne != null && commissionAgentOne.getPerson() != null) {
@@ -623,19 +610,14 @@ public class OperationService implements IOperationService {
 
 			Float commissionAgentOneAmount = transactionService.checkCommissionAmount(commissionAgentOne,
 					operation.getOriginAmount());
-			Transaction agentOriginTOut = transactionService.createTransaction(commissionAgentOneAmount,
-					ETransactionType.DISCHARGE.getValue(), clientAccountOriginChecked, newOperation);
 			Transaction agentOriginTIn = transactionService.createTransaction(commissionAgentOneAmount,
 					ETransactionType.ENTRY.getValue(), commissionAgentAccountOriginChecked, newOperation);
 
 			CommissionType comType = commissionAgentOne.getCommissionType();
 			Float comAmount = commissionAgentOne.getCommissionAmount();
 
-			agentOriginTOut.setCommissionType(comType);
-			agentOriginTOut.setCommision(comAmount.toString());
 			agentOriginTIn.setCommissionType(comType);
 			agentOriginTIn.setCommision(comAmount.toString());
-			transactions.add(agentOriginTOut);
 			transactions.add(agentOriginTIn);
 		}
 		if (commissionAgentTwo != null && commissionAgentTwo.getPerson() != null) {
@@ -649,19 +631,14 @@ public class OperationService implements IOperationService {
 
 			Float commissionAgentTwoAmount = transactionService.checkCommissionAmount(commissionAgentTwo,
 					operation.getOriginAmount());
-			Transaction agentDestinationTOut = transactionService.createTransaction(commissionAgentTwoAmount,
-					ETransactionType.DISCHARGE.getValue(), clientAccountDestinationChecked, newOperation);
 			Transaction agentDestinationTIn = transactionService.createTransaction(commissionAgentTwoAmount,
 					ETransactionType.ENTRY.getValue(), commissionAgentAccountDestinationChecked, newOperation);
 
 			CommissionType comType = commissionAgentTwo.getCommissionType();
 			Float comAmount = commissionAgentTwo.getCommissionAmount();
 
-			agentDestinationTOut.setCommissionType(comType);
-			agentDestinationTOut.setCommision(comAmount.toString());
 			agentDestinationTIn.setCommissionType(comType);
 			agentDestinationTIn.setCommision(comAmount.toString());
-			transactions.add(agentDestinationTOut);
 			transactions.add(agentDestinationTIn);
 		}
 
@@ -802,10 +779,12 @@ public class OperationService implements IOperationService {
 		Account userAccountOrigin = accountService.findAccountUserById(userEnterpriseId, originCurrencyId, accountType);
 
 		if (operation.getBrokerId() != null) {
-			Account userAccountDestination = accountService.findAccountUserById(userBrokerId, originCurrencyId, accountType);
+			Account userAccountDestination = accountService.findAccountUserById(userBrokerId, originCurrencyId,
+					accountType);
 
 			transactions.add(transactionService.createTransaction(originAmount, ETransactionType.ENTRY.getValue(),
-					accountService.checkAccountUser(userAccountDestination, userBrokerId, originCurrencyId, accountType),
+					accountService.checkAccountUser(userAccountDestination, userBrokerId, originCurrencyId,
+							accountType),
 					newOperation));
 		}
 
@@ -815,6 +794,8 @@ public class OperationService implements IOperationService {
 
 		Long operationId = operation.getId();
 		Operation currentOperation = operationDao.findById(operationId).orElse(null);
+		OperationStatus currentStatus = currentOperation.getOperationStatus();
+
 		if (currentOperation == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, OPERATION_NOT_FOUND + operationId);
 		}
@@ -826,38 +807,45 @@ public class OperationService implements IOperationService {
 		currentOperation.setOperationStatus(new OperationStatus(parceledState.getStatus()));
 		operationDao.save(currentOperation);
 
-		operation.setSubTypeId(EOperationStatus.CANCELLED.getStatus());
-		Operation cancelOperation = createExpenseOperation(newOperation, operation, EOperationType.EXPENSE.getState(),
-				transactions);
+		Long parceledCurrentState = currentStatus.getId();
+		if (parceledCurrentState == null)
+			return;
 
-		cancelOperation.setOperationStatus(new OperationStatus(parceledState.getStatus()));
-		operationDao.save(cancelOperation);
+		Boolean isEntered = parceledCurrentState == EOperationStatus.ENTERED.getStatus();
 
+		if (!isEntered) {
+			operation.setSubTypeId(EOperationStatus.CANCELLED.getStatus());
+			Operation cancelOperation = createExpenseOperation(newOperation, operation,
+					EOperationType.EXPENSE.getState(), transactions);
+
+			cancelOperation.setOperationStatus(new OperationStatus(parceledState.getStatus()));
+			operationDao.save(cancelOperation);
+		}
 	}
 
 	public void enterChargeOperation(OperationDto operation, Long operationType) {
 		Long clientId = operation.getOriginClientId();
 		Long userEnterpriseId = operation.getEnterpriseId();
 		Long userBrokerId = operation.getBrokerId();
-		Long accountType = EAccountType.CURRENT_ACCOUNT.getState();
 		Operation newOperation = new Operation();
 		List<Transaction> transactions = new ArrayList<>();
 		Long originCurrencyId = operation.getOriginCurrencyId();
+		Float originAmountClient = operation.getOriginAmount();
+		Long cc = EAccountType.CURRENT_ACCOUNT.getState();
+		Long cash = EAccountType.CASH.getState();
 
 		if (userBrokerId == null)
 			userBrokerId = userEnterpriseId;
-		Account clientAccountOrigin = accountService.findAccountClientById(clientId, originCurrencyId, accountType);
+		Account clientAccountOriginCC = accountService.findAccountClientById(clientId, originCurrencyId, cc);
 
-		Account userAccountOrigin = accountService.findAccountUserById(userBrokerId, originCurrencyId, accountType);
+		Account userAccountOrigin = accountService.findAccountUserById(userBrokerId, originCurrencyId, cash);
 
-		transactions.add(
-				transactionService.createTransaction(operation.getOriginAmount(), ETransactionType.DISCHARGE.getValue(),
-						accountService.checkAccountClient(clientAccountOrigin, clientId, originCurrencyId, accountType),
-						newOperation));
+		transactions.add(transactionService.createTransaction(originAmountClient, ETransactionType.ENTRY.getValue(),
+				accountService.checkAccountClient(clientAccountOriginCC, clientId, originCurrencyId, cc), newOperation));
 
 		transactions.add(
 				transactionService.createTransaction(operation.getOriginAmount(), ETransactionType.ENTRY.getValue(),
-						accountService.checkAccountUser(userAccountOrigin, userBrokerId, originCurrencyId, accountType),
+						accountService.checkAccountUser(userAccountOrigin, userBrokerId, originCurrencyId, cash),
 						newOperation));
 		createPayChargeOperation(newOperation, operation, operationType, transactions);
 
@@ -867,26 +855,28 @@ public class OperationService implements IOperationService {
 		Long clientId = operation.getOriginClientId();
 		Long userEnterpriseId = operation.getEnterpriseId();
 		Long userBrokerId = operation.getBrokerId();
-		Long accountType = EAccountType.CURRENT_ACCOUNT.getState();
+		Long cc = EAccountType.CURRENT_ACCOUNT.getState();
+		Long cash = EAccountType.CASH.getState();
+
 		Operation newOperation = new Operation();
 		List<Transaction> transactions = new ArrayList<>();
 		Long originCurrencyId = operation.getOriginCurrencyId();
+		Float originAmountClient = operation.getOriginAmount();
 
 		if (userBrokerId == null)
 			userBrokerId = userEnterpriseId;
-		Account clientAccountOrigin = accountService.findAccountClientById(clientId, originCurrencyId, accountType);
+		
+		Account clientAccountOriginCC = accountService.findAccountClientById(clientId, originCurrencyId, cc);
 
-		Account userAccountOrigin = accountService.findAccountUserById(userBrokerId, originCurrencyId, accountType);
+		Account userAccountOrigin = accountService.findAccountUserById(userBrokerId, originCurrencyId, cash);
 
-		transactions.add(
-				transactionService.createTransaction(operation.getOriginAmount(), ETransactionType.ENTRY.getValue(),
-						accountService.checkAccountClient(clientAccountOrigin, clientId, originCurrencyId, accountType),
-						newOperation));
-
+		transactions.add(transactionService.createTransaction(originAmountClient, ETransactionType.DISCHARGE.getValue(),
+				accountService.checkAccountClient(clientAccountOriginCC, clientId, originCurrencyId, cc), newOperation));
 		transactions.add(
 				transactionService.createTransaction(operation.getOriginAmount(), ETransactionType.DISCHARGE.getValue(),
-						accountService.checkAccountUser(userAccountOrigin, userBrokerId, originCurrencyId, accountType),
+						accountService.checkAccountUser(userAccountOrigin, userBrokerId, originCurrencyId, cash),
 						newOperation));
+
 		createPayChargeOperation(newOperation, operation, operationType, transactions);
 
 	}
@@ -913,8 +903,8 @@ public class OperationService implements IOperationService {
 
 		List<Transaction> transactions = operation.getTransactions();
 		Transaction traComm = transactions.stream()
-				.filter((t) -> t.getCommissionType() != null
-						&& t.getTransactionType().getId() == ETransactionType.ENTRY.getValue())
+				.filter(
+						(t) -> t.getCommissionType() != null && t.getTransactionType().getId() == ETransactionType.ENTRY.getValue())
 				.findFirst().orElse(null);
 
 		if (traComm != null) {
@@ -971,67 +961,89 @@ public class OperationService implements IOperationService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, OPERATION_NOT_FOUND + id);
 		}
 
+		// Transacciones
 		List<Transaction> transactions = operation.getTransactions();
 
-		List<Transaction> traComm = transactions.stream()
-				.filter((t) -> t.getCommissionType() != null
-						&& t.getTransactionType().getId() == ETransactionType.ENTRY.getValue())
+		// Dto a retornar
+		OperationTransferDTO dto = mapperService.modelMapper().map(operation, OperationTransferDTO.class);
+
+		// Transaccion Cliente Origen Monto
+		Transaction traClientOrigin = transactions.stream()
+				.filter(
+						(x) -> x.getCommissionType() == null && x.getTransactionType().getId() == ETransactionType.ENTRY.getValue())
+				.findFirst().orElse(null);
+
+		// Transaccion Cliente Destino Monto
+		Transaction traClientDestin = transactions.stream().filter(
+				(x) -> x.getCommissionType() == null && x.getTransactionType().getId() == ETransactionType.DISCHARGE.getValue())
+				.findFirst().orElse(null);
+
+		// Transacciones de comisiones: 2 (clientes), 3 o 4
+		List<Transaction> traComm = transactions.stream().filter((t) -> t.getCommissionType() != null)
 				.collect(Collectors.toList());
 
-		List<CommissionPersonDTO> list = new ArrayList<>();
+		// Comision Agente Origen
+		Transaction traAgentOrigin = traComm.size() > 2 ? traComm.get(2) : null;
+		if (traAgentOrigin != null && traAgentOrigin.getAccount() != null) {
+			CommissionType comType = new CommissionType();
+			comType.setId(traAgentOrigin.getCommissionType().getId());
+			comType.setDescription(traAgentOrigin.getCommissionType().getDescription());
 
+			CommissionPersonDTO agentOne = new CommissionPersonDTO();
+			agentOne.setCommissionAmount(Float.parseFloat(traAgentOrigin.getCommision()));
+			agentOne.setCommissionType(comType);
+			Account currentAcount = traAgentOrigin.getAccount();
+			User currentUser = currentAcount.getUser();
+			if (currentUser != null && currentUser.getId() != null) {
+				PersonDTO person = mapperService.mapUserToPersonDTO(currentUser);
+				agentOne.setPerson(person);
+			}
+			dto.setOriginCommissionAgent(agentOne);
+		}
+
+		// Comision Agente Destino
+		Transaction traAgentDestin = traComm.size() > 3 ? traComm.get(3) : null;
+		if (traAgentDestin != null && traAgentDestin.getAccount() != null) {
+			CommissionType comType = new CommissionType();
+			comType.setId(traAgentDestin.getCommissionType().getId());
+			comType.setDescription(traAgentDestin.getCommissionType().getDescription());
+
+			CommissionPersonDTO agentTwo = new CommissionPersonDTO();
+			agentTwo.setCommissionAmount(Float.parseFloat(traAgentDestin.getCommision()));
+			agentTwo.setCommissionType(comType);
+			Account currentAcount = traAgentDestin.getAccount();
+			User currentUser = currentAcount.getUser();
+			if (currentUser != null && currentUser.getId() != null) {
+				PersonDTO person = mapperService.mapUserToPersonDTO(currentUser);
+				agentTwo.setPerson(person);
+			}
+			dto.setDestinationCommissionAgent(agentTwo);
+		}
+
+		// Iteracion de las comisiones
 		for (Transaction t : traComm) {
 			if (t != null) {
-				CommissionPersonDTO comDTO = new CommissionPersonDTO();
+
 				CommissionType comType = new CommissionType();
 				comType.setId(t.getCommissionType().getId());
 				comType.setDescription(t.getCommissionType().getDescription());
 
-				comDTO.setCommissionType(comType);
-				comDTO.setCommissionAmount(Float.parseFloat(t.getCommision()));
-				Account currentAcount = t.getAccount();
-				// Client currentClient = currentAcount.getClient();
-				User currentUser = currentAcount.getUser();
-				if (currentUser != null && currentUser.getId() != null) {
-					PersonDTO person = mapperService.mapUserToPersonDTO(currentUser);
-					comDTO.setPerson(person);
-					// } else {
-					// if (currentClient != null && currentClient.getId() != null) {
-					// PersonDTO person = mapperService.mapClientToPersonDTO(currentClient);
-					// comDTO.setPerson(person);
-					// }
+				// Comision Cliente Origen
+				if (t.getAccount().getId() == traClientOrigin.getAccount().getId()) {
+					CommissionDTO clientOneCom = new CommissionDTO();
+					clientOneCom.setCommissionAmount(Float.parseFloat(t.getCommision()));
+					clientOneCom.setCommissionType(comType);
+					clientOneCom.setTransactionType(t.getTransactionType().getId());
+					dto.setOriginCommissionClient(clientOneCom);
 				}
-				list.add(comDTO);
-			}
-		}
-
-		OperationTransferDTO dto = mapperService.modelMapper().map(operation, OperationTransferDTO.class);
-
-		if (list != null && list.size() > 0) {
-			CommissionPersonDTO clientOne = list.get(0);
-			if (clientOne != null && clientOne.getCommissionType() != null) {
-				CommissionDTO clientOneCom = new CommissionDTO();
-				clientOneCom.setCommissionAmount(clientOne.getCommissionAmount());
-				clientOneCom.setCommissionType(clientOne.getCommissionType());
-				dto.setOriginCommissionClient(clientOneCom);
-			}
-
-			CommissionPersonDTO clientTwo = list.get(1);
-			if (clientTwo != null && clientTwo.getCommissionType() != null) {
-				CommissionDTO clientTwoCom = new CommissionDTO();
-				clientTwoCom.setCommissionAmount(clientTwo.getCommissionAmount());
-				clientTwoCom.setCommissionType(clientTwo.getCommissionType());
-				dto.setDestinationCommissionClient(clientTwoCom);
-			}
-
-			CommissionPersonDTO agentOne = list.size() > 2 ? list.get(2) : null;
-			if (agentOne != null && agentOne.getCommissionType() != null) {
-				dto.setOriginCommissionAgent(agentOne);
-			}
-
-			CommissionPersonDTO agentTwo = list.size() > 3 ? list.get(3) : null;
-			if (agentTwo != null && agentTwo.getCommissionType() != null) {
-				dto.setDestinationCommissionAgent(agentOne);
+				// Comision Cliente Destino
+				if (t.getAccount().getId() == traClientDestin.getAccount().getId()) {
+					CommissionDTO clientTwoCom = new CommissionDTO();
+					clientTwoCom.setCommissionAmount(Float.parseFloat(t.getCommision()));
+					clientTwoCom.setCommissionType(comType);
+					clientTwoCom.setTransactionType(t.getTransactionType().getId());
+					dto.setDestinationCommissionClient(clientTwoCom);
+				}
 			}
 		}
 

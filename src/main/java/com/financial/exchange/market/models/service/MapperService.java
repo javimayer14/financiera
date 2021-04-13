@@ -2,6 +2,7 @@ package com.financial.exchange.market.models.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,14 @@ import org.springframework.stereotype.Component;
 
 import com.financial.exchange.market.models.dto.AddressDTO;
 import com.financial.exchange.market.models.dto.AmountDto;
+import com.financial.exchange.market.models.dto.BrokerDTO;
 import com.financial.exchange.market.models.dto.ClientDTO;
+import com.financial.exchange.market.models.dto.CurrencyDTO;
 import com.financial.exchange.market.models.dto.OperationDetailDTO;
+import com.financial.exchange.market.models.dto.OperationTypeStatusDTO;
 import com.financial.exchange.market.models.dto.PersonDTO;
 import com.financial.exchange.market.models.dto.TradingOperationDetailDTO;
+import com.financial.exchange.market.models.dto.TransactionDTO;
 import com.financial.exchange.market.models.dto.ExpenseOperationDTO;
 import com.financial.exchange.market.models.dto.ExpenseTypeDTO;
 import com.financial.exchange.market.models.dto.UserDTO;
@@ -21,9 +26,12 @@ import com.financial.exchange.market.models.dto.WorkingDayDTO;
 import com.financial.exchange.market.models.dto.WorkingDayOperationDetailDTO;
 import com.financial.exchange.market.models.entity.Address;
 import com.financial.exchange.market.models.entity.Client;
+import com.financial.exchange.market.models.entity.Currency;
 import com.financial.exchange.market.models.entity.Expense;
 import com.financial.exchange.market.models.entity.ExpenseType;
 import com.financial.exchange.market.models.entity.Operation;
+import com.financial.exchange.market.models.entity.OperationStatus;
+import com.financial.exchange.market.models.entity.OperationType;
 import com.financial.exchange.market.models.entity.Transaction;
 import com.financial.exchange.market.models.entity.User;
 
@@ -139,4 +147,47 @@ public class MapperService {
 		}
 		return person;
 	}
+
+	public TransactionDTO transactionsToDto (Transaction transaction) {
+
+		TransactionDTO dto = modelMapper().map(transaction, TransactionDTO.class);
+
+		OperationStatus operationStatus = transaction.getOperation().getOperationStatus();
+		OperationType operationType = transaction.getOperation().getOperationType();
+		Currency currency = transaction.getAccount().getCurrency();
+
+		dto.setOperationId(transaction.getOperation().getId());
+		dto.setOperationStatus(modelMapper().map(operationStatus, OperationTypeStatusDTO.class));
+		dto.setOperationType(modelMapper().map(operationType, OperationTypeStatusDTO.class));
+		dto.setCurrency(modelMapper().map(currency, CurrencyDTO.class));
+
+		Boolean isCommision = transaction.getCommissionType() != null;
+		dto.setIsCommission(isCommision);
+
+		if (transaction.getOperation().getBroker() != null) {
+			dto.setBroker(modelMapper().map(transaction.getOperation().getBroker(), BrokerDTO.class));
+		}
+
+		Client client = null;
+		if (transaction.getAccount() != null) {
+			client = transaction.getAccount().getClient();
+		}
+
+		if (client != null && 
+				client.getAddress() != null &&
+				!client.getAddress().isEmpty()) {
+			List<Address> addresses = transaction.getAccount().getClient().getAddress();
+			addresses.removeIf(a -> (a.getState() == null) || (a.getState().equals(EState.DELETED.getState())));
+			dto.setAddress(mapList(addresses, AddressDTO.class));
+		}
+
+		return dto;
+	}
+
+	<S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
+		return source
+		  .stream()
+		  .map(element -> modelMapper().map(element, targetClass))
+		  .collect(Collectors.toList());
+	}	
 }

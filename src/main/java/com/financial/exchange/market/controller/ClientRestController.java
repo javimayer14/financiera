@@ -22,6 +22,7 @@ import com.financial.exchange.market.models.dto.ClientAccountDTO;
 import com.financial.exchange.market.models.entity.Account;
 import com.financial.exchange.market.models.entity.Client;
 import com.financial.exchange.market.models.service.IClientService;
+import com.financial.exchange.market.utils.StringCustomUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -97,7 +98,7 @@ public class ClientRestController {
 
 	@GetMapping("/clients/filter/page/{page}/limit/{limit}")
 	public Page<Client> find(@RequestParam(value = "var", required = false) String var, @PathVariable Integer page, @PathVariable Integer limit) {
-		return clientService.findClientByVar(var, PageRequest.of(page, limit));
+		return clientService.findClientByVar(StringCustomUtils.trimString(var), PageRequest.of(page, limit));
 	}
 
 }

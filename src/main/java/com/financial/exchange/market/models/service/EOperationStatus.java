@@ -10,7 +10,8 @@ public enum EOperationStatus {
 	FINISHED(6L),
 	SUSPENDED(7L),
 	CANCELLED(8L),
-	REJECTED(9L);
+	REJECTED(9L),
+	ARCHIVED(10L);
 
 	private final Long value;
 

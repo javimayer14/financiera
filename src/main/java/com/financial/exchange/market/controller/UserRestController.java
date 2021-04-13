@@ -23,6 +23,7 @@ import com.financial.exchange.market.models.entity.Account;
 import com.financial.exchange.market.models.entity.Role;
 import com.financial.exchange.market.models.entity.User;
 import com.financial.exchange.market.models.service.IUserService;
+import com.financial.exchange.market.utils.StringCustomUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -65,16 +66,17 @@ public class UserRestController {
 	// Consultar sobre este EP
 	@PostMapping("/users/search")
 	public List<User> findMultipleVar(@RequestBody User user) {
-		String username = user.getUsername();
-		String name = user.getName();
-		String surname = user.getSurname();
+		String username = StringCustomUtils.trimString(user.getUsername());
+		String name = StringCustomUtils.trimString(user.getName());
+		String surname = StringCustomUtils.trimString(user.getSurname());
+		Integer state = user.getState();
 		List<Role> roles = user.getRoles();
-		return userService.findByUserParamsMult(roles, username, name, surname);
+		return userService.findByUserParamsMult(roles, username, name, surname, state);
 	}
 
 	@GetMapping("/users/filter/page/{page}/limit/{limit}")
 	public Page<UserDTO> find(@RequestParam(value = "var", required = false) String var, @PathVariable Integer page, @PathVariable Integer limit) {
-		return userService.findByUserParam(var, PageRequest.of(page, limit));
+		return userService.findByUserParam(StringCustomUtils.trimString(var), PageRequest.of(page, limit));
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)

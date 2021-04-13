@@ -5,9 +5,14 @@ import java.util.List;
 import com.financial.exchange.market.models.dto.AmountDto;
 import com.financial.exchange.market.models.dto.CommissionDTO;
 import com.financial.exchange.market.models.dto.CommissionPersonDTO;
+import com.financial.exchange.market.models.dto.SearchTransactionDto;
+import com.financial.exchange.market.models.dto.TransactionDTO;
 import com.financial.exchange.market.models.entity.Account;
 import com.financial.exchange.market.models.entity.Operation;
 import com.financial.exchange.market.models.entity.Transaction;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ITransactionService {
 
@@ -27,4 +32,6 @@ public interface ITransactionService {
 
 	public List<Transaction> createTransactions(AmountDto am, Long userDeliveryId, Long userEnterpriseId,
 			Operation newOperation, Long accountType, Long operationType);
+
+	public Page<TransactionDTO> findByVar(SearchTransactionDto transaction, Pageable pageRequest);
 }

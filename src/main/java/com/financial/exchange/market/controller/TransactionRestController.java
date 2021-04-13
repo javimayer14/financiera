@@ -3,6 +3,8 @@ package com.financial.exchange.market.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.financial.exchange.market.models.dto.SearchTransactionDto;
+import com.financial.exchange.market.models.dto.TransactionDTO;
 import com.financial.exchange.market.models.entity.Transaction;
 import com.financial.exchange.market.models.service.ITransactionService;
 
@@ -27,6 +31,12 @@ public class TransactionRestController {
 	public List<Transaction> index() {
 		return transactionService.findAll();
 	}
+
+	@PostMapping("/transactions/search")
+	public Page<TransactionDTO> search(@RequestBody SearchTransactionDto transaction, Pageable pageRequest) {
+		return transactionService.findByVar(transaction, pageRequest);
+	}
+
 
 	@GetMapping("transactions/{id}")
 	public Transaction show(@PathVariable Long id) {

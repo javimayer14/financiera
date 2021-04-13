@@ -61,4 +61,8 @@ public interface IAccountDao extends CrudRepository<Account, Long> {
 			+ " AND at.id = 2")
 	List<ClientAccountDTO> findAccountCreditorDebtor(@Param("idCurrency") Long idCurrency);
 
+	
+	@Query("FROM Account a JOIN a.user u JOIN a.accountType at WHERE u.id =:idUser AND at.id = 1")
+	public List<Account> findAllAccountDeliveryById(@Param("idUser") Long idUser);
+
 }

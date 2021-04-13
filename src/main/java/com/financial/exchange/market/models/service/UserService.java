@@ -1,7 +1,7 @@
 package com.financial.exchange.market.models.service;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -43,6 +43,9 @@ public class UserService implements UserDetailsService, IUserService {
 	@Autowired
 	private MapperService mapperService;
 
+	private static final String DELIVERY_NAME = "ROLE_DELIVERY";
+	private static final Long DELIVERY_ID = 5l;
+
 	@Override
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -57,8 +60,8 @@ public class UserService implements UserDetailsService, IUserService {
 				.map(role -> new SimpleGrantedAuthority(role.getName()))
 				.peek(authority -> logger.info("Role" + authority.getAuthority())).collect(Collectors.toList());
 
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true, true,
-				true, true, authorities);
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true,
+				true, true, true, authorities);
 	}
 
 	@Override
@@ -100,8 +103,19 @@ public class UserService implements UserDetailsService, IUserService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<User> findByUserParamsMult(List<Role> roles, String username, String name, String surname) {
-		return userDao.findUsersbyMultipleVar(roles, username, name, surname);
+	public List<User> findByUserParamsMult(List<Role> roles, String username, String name, String surname, Integer state) {
+		List<User> result = userDao.findUsersbyMultipleVar(roles, username, name, surname, state);
+		for (User u : result) {
+			List<Account> onlyCash = new ArrayList<>();
+			if (isDelivery(u.getRoles()) && isDelivery(roles)) {
+				for (Account a : u.getAccounts()) {
+					if (a.getAccountType().getId() == EAccountType.CASH.getState())
+						onlyCash.add(a);
+				}
+				u.setAccounts(onlyCash);
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -143,8 +157,22 @@ public class UserService implements UserDetailsService, IUserService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Account> findAllAccountUserById(Long id) {
+		User currentUser = userDao.findById(id).orElse(null);
+		if (currentUser == null)
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el usuario con id " + id);
 		List<Account> accountList = accountDao.findAllAccountUserById(id);
 		return accountList;
+	}
+
+	private Boolean isDelivery(List<Role> roles) {
+		Boolean isDelivery = false;
+		for (Role r : roles) {
+			if (DELIVERY_NAME.equals(r.getName()) || r.getId() == DELIVERY_ID) {
+				isDelivery = true;
+				return isDelivery;
+			}
+		}
+		return isDelivery;
 	}
 
 	@Override

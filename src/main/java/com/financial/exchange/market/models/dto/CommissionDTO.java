@@ -14,4 +14,5 @@ public class CommissionDTO implements Serializable {
 	private Long id;
 	private CommissionType commissionType;
 	private Float commissionAmount;
+	private Long transactionType;
 }

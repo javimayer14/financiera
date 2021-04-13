@@ -36,7 +36,17 @@ public class ClientService implements IClientService {
 	@Override
 	@Transactional(readOnly = true)
 	public Client findById(Long id) {
-		return clientDao.findById(id).orElse(null);
+		Client client = clientDao.findById(id).orElse(null);
+
+		if (client != null) {
+			if (client.getAddress() !=  null) {
+				client.getAddress().removeIf(a -> (a.getState() == null) || (a.getState().equals(EState.DELETED.getState())));
+			}
+			if (client.getPhones() != null) {
+				client.getPhones().removeIf(p -> (p.getState() == null) || (p.getState().equals(EState.DELETED.getState())));
+			}
+		}
+		return client;
 	}
 
 	@Override

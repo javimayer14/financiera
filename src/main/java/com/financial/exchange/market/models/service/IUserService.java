@@ -33,7 +33,7 @@ public interface IUserService {
 
 	public Account findAccountUserById(Long idUser, Long idAccount);
 
-	public List<User> findByUserParamsMult(List<Role> roles, String username, String name, String surname);
+	public List<User> findByUserParamsMult(List<Role> roles, String username, String name, String surname, Integer state);
 
 	public Page<UserDTO> findByUserParam(String param, Pageable pageable);
 
@@ -42,5 +42,6 @@ public interface IUserService {
 	public void setUserAddresses(User currentUser, User user);
 
 	public User update(User currentUser, User user);
+
 
 }
